@@ -15,6 +15,18 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseActivity extends ActionBarActivity{
 
+    //test rebase 2 - commit 1
+    //test rebase 2 - commit 1
+    //test rebase 2 - commit 2
+    //test rebase 2 - commit 2
+
+
+    //test rebase 2 - commit 3
+    //test rebase 2 - commit 3
+    //test rebase 2 - commit 3
+    //test rebase 2 - commit 3
+
+
     @Inject
     UserDto user;
 
