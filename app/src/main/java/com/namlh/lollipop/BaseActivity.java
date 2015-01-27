@@ -26,6 +26,10 @@ public abstract class BaseActivity extends ActionBarActivity{
     //test rebase 2 - commit 3
     //test rebase 2 - commit 3
 
+    //Test rebase 1 - commit 1
+    //Test rebase 1 - commit 2
+    //Test rebase 1 - commit 2
+
 
     @Inject
     UserDto user;
