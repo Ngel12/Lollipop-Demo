@@ -1,9 +1,11 @@
-package com.namlh.lollipop;
+package com.namlh.lollipop.data;
 
 import com.namlh.lollipop.dto.ListTTItems;
+import com.namlh.lollipop.dto.TTItem;
 
 import retrofit.Callback;
 import retrofit.http.GET;
+import rx.Observable;
 
 /**
  * Created by namlh on 11/21/14.
@@ -11,5 +13,5 @@ import retrofit.http.GET;
 public interface WebService {
 
     @GET("/")
-    void getData(Callback<ListTTItems> callback);
+    Observable<ListTTItems> getData();
 }

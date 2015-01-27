@@ -23,8 +23,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder>{
 
     public List<TTItem> posts = new ArrayList<>();
 
-    public void addItems(List<TTItem> items){
-        posts.addAll(items);
+//    public void addItems(List<TTItem> items){
+//        posts.addAll(items);
+//        notifyDataSetChanged();
+//    }
+
+    public void addItem(TTItem item){
+        posts.add(item);
         notifyDataSetChanged();
     }
 

@@ -1,8 +1,8 @@
 package com.namlh.lollipop;
 
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,24 +11,25 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
+import com.namlh.lollipop.data.TTItemDatabase;
+import com.namlh.lollipop.data.WebService;
 import com.namlh.lollipop.dto.ListTTItems;
-import com.squareup.okhttp.OkHttpClient;
+import com.namlh.lollipop.dto.TTItem;
 
-import butterknife.ButterKnife;
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.Client;
-import retrofit.client.OkClient;
 import retrofit.client.Response;
+import rx.Observable;
+import rx.Observer;
+import rx.functions.Func1;
 
 
-public class MainActivity extends ActionBarActivity implements Callback<ListTTItems>, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.mainView)
     RecyclerView mRecyclerView;
@@ -42,15 +43,18 @@ public class MainActivity extends ActionBarActivity implements Callback<ListTTIt
 
     private LinearLayoutManager mLayoutManager;
     private CardAdapter mAdapter;
-    private WebService webService;
+
+    @Inject
+    TTItemDatabase database;
+
+    Observable<TTItem> observer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
 
-        initWebService();
+        Toast.makeText(this,"Hash: "+user.hash,Toast.LENGTH_LONG).show();
 
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_launcher);
@@ -71,18 +75,49 @@ public class MainActivity extends ActionBarActivity implements Callback<ListTTIt
         // use a linear layout manager
         mLayoutManager = new GridLayoutManager(this,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        webService.getData(this);
+//        webService.getData(this);
+
     }
 
-    private void initWebService(){
-        OkHttpClient client = new OkHttpClient();
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://tinhte-api.herokuapp.com")
-                .setClient(new OkClient(client))
-                .build();
-        webService = restAdapter.create(WebService.class);
-    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Observable<TTItem> observable = database.getData();
 
+        observable.subscribe(new Observer<TTItem>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TTItem ttItem) {
+                mAdapter.addItem(ttItem);
+            }
+        });
+
+        observable.subscribe(new Observer<TTItem>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TTItem ttItem) {
+                Log.e("oNNext",ttItem.title);
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,28 +135,59 @@ public class MainActivity extends ActionBarActivity implements Callback<ListTTIt
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this,MainActivity2.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void success(ListTTItems items, Response response) {
-        mAdapter.addItems(items.posts);
-        refreshLayout.setRefreshing(false);
-    }
+//    @Override
+//    public void success(ListTTItems items, Response response) {
+//        mAdapter.addItems(items.posts);
+//        Observable.just(items)
+//                .flatMap(new Func1<ListTTItems, Observable<TTItem>>() {
+//                    @Override
+//                    public Observable<TTItem> call(ListTTItems items) {
+//                        return Observable.from(items.posts);
+//                    }
+//                })
+//                .subscribe(new Observer<TTItem>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(TTItem ttItem) {
+//                        mAdapter.addItem(ttItem);
+//                    }
+//                });
+//        bus.post(items);
+//        refreshLayout.setRefreshing(false);
+//    }
 
-    @Override
-    public void failure(RetrofitError error) {
-        Log.e("Request error",error.getMessage(),error.fillInStackTrace());
-        refreshLayout.setRefreshing(false);
-    }
+//    @Subscribe
+//    public void getItemsSuccess(ListTTItems items){
+//        mAdapter.addItems(items.posts);
+//        refreshLayout.setRefreshing(false);
+//    }
+
+//    @Override
+//    public void failure(RetrofitError error) {
+//        Log.e("Request error",error.getMessage(),error.fillInStackTrace());
+//        refreshLayout.setRefreshing(false);
+//    }
 
     @Override
     public void onRefresh() {
         mAdapter.clear();
-        webService.getData(this);
+//        webService.getData(this);
     }
 
 }
