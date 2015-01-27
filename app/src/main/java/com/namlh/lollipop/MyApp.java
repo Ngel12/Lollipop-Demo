@@ -25,4 +25,7 @@ public class MyApp extends Application {
     public static void inject(Context context,Object o){
         getInstance(context.getApplicationContext()).objectGraph.inject(o);
     }
+
+    //Pull request 2
+    // easy to create pull request
 }
