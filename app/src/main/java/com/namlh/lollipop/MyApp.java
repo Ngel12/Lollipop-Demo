@@ -10,6 +10,10 @@ import dagger.ObjectGraph;
  */
 public class MyApp extends Application {
 
+
+    //hello world - create conflic
+    //hi good morning
+
     ObjectGraph objectGraph;
 
     @Override
