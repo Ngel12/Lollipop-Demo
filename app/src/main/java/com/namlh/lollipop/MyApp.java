@@ -10,6 +10,10 @@ import dagger.ObjectGraph;
  */
 public class MyApp extends Application {
 
+    //Hello world
+    //hello good morning
+    //hi/
+    //how are you
 
     //hello world - create conflic
     //hi good morning
